@@ -1,0 +1,15 @@
+1.
+different types of modules are merged under the unbrella class "module",
+with unified functions: __init__, after_init, displayName, displayDescription, process, process_single, in_out, validate_parameter
+
+2.
+process functions must be able to process one or multiple elements and return accordingly.
+i.e. passing one text/image or list of text/image.
+i.e.e. if the input type of a module is int, it must also take list of ints.
+
+3.
+process functions doesn't set Document attributes, instead return results.
+
+4.
+New method "in-out" to specify input/output types.
+is both static and dynamic via the optional "self" argument: def in_out(self=None): ...

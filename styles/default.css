@@ -1,0 +1,684 @@
+:root {
+	--widget_entry_height: 22px;
+	--widget_textentry_height: calc(var(--widget_entry_height) * 4);
+	--white: rgb(245, 245, 245);
+	--grey1: rgb(50, 50, 50);
+	--widget_body_background: rgba(35, 35, 35, 0.95);
+	--txt-container-horizontal-space: 5px;
+	--widget_entry_horizontal_space: 18px;
+	--widget_obj_corner: 15px;
+	--widget_preview_margin: 10px;
+	--live_green: rgb(35, 255, 35);
+}
+
+
+
+body {
+	font-family: 'sans';
+	background-color: rgb(25, 25, 25);
+	color: var(--white);
+	margin: 0;
+	overflow: hidden;
+	border-style:solid;
+	border-width: 0;
+}
+
+input {
+	background-color: rgb(25, 25, 25);
+	color: var(--white);
+}
+
+
+h1 {
+	width: 10%;
+}
+
+button {
+	border-color: #999999;
+	border-radius: 5px;
+	border-style: solid;
+	background-color: #222222;
+	color: var(--white);
+}
+button:hover {
+	border-color: #f2f2f2;
+}
+button:active {
+	background-color: #777777;
+}
+
+
+label {
+	color: var(--white);
+}
+
+.divider_horizontal {
+	border-style: solid;
+	border-color: #777777;
+	border-width: 1px;
+	height: 0;
+	margin-left: 5px; margin-right: 5px;
+	margin-top: 2px; margin-bottom: 2px;
+}
+
+.divider_vertical {
+	border-style: solid;
+	border-color: #777777;
+	border-width: 1px;
+	width: 0;
+	margin-left: 2px; margin-right: 2px;
+	margin-top: 5px; margin-bottom: 5px;
+
+}
+
+#loading_screen {
+	display: flex;
+	position: absolute;
+	top: 0; left: 0; right: 0; bottom: 0;
+	z-index: 99999;
+	overflow: hidden;
+	background-color: #222222;
+	font-size: 25px;
+	transition: opacity 1s, visibility 1s;
+	justify-content: center;
+	align-items: center;
+}
+
+#status_bar {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100vw;
+	height: 20px;
+	z-index: 9000;
+	border-style: none;
+	/* border-color: #777777; */
+	background-color: #333333;
+}
+
+#scrolled_frame {
+	top: 0; left: 0; top: 0; bottom: 0;
+	overflow: hidden;
+}
+
+#drawing_board {
+	/* layer to place widgets */
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	/* top: -400px;
+	left: -1000px;
+	width: 10000px;
+	height: 10000px; */
+	z-index: 0;
+	overflow: hidden;
+}
+
+#drawing_board_bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: -2;
+	overflow: hidden;
+}
+
+#svg_logo {
+	transform: translate(7%);
+	position: fixed;
+}
+
+.svg_canvas {
+	/* layer to place connection curves */
+	position: fixed;
+	z-index: -1;
+	overflow: visible;
+	/* left: -400px;
+	top: -1000px;
+	width: 10000px;
+	height: 10000px; */
+	left: 0; top: 0;
+	width: 100%;
+	height: 100%;
+	/* using px as unit seems to scale the canvas incorrectly.
+	Perhaps something with the DPI? */
+	pointer-events: all;
+}
+#svg_canvas_temp {
+	/* left: -400px;
+	top: -1000px;
+	width: 10000%;
+	height: 10000%; */
+	width: 100%;
+	height: 100%;
+	left: 0; top: 0;
+	z-index: 10;
+	pointer-events: none;
+}
+
+
+.conn_curve {
+	/* individual connection curve */
+	stroke: var(--white);
+	stroke-width: 3px;
+	fill: none;
+	pointer-events: all;
+}
+.conn_curve:hover {
+	stroke-width: 10px;
+}
+
+.widget-module {
+	/* the root element for a widget */
+	z-index: 5;
+	position: absolute;
+	/* padding: 0; */
+	top: 20px;
+	left: 20px;
+	/* width: 200px; */
+	/* width obtained from render_main.js */
+	font-size: 15px;
+	overflow: visible;
+	transform-origin: left top;
+	/* border-color: rgb(22, 22, 22); */
+}
+
+.widget_title {
+	padding-left: 7px;
+	padding-right: 7px;
+	padding-top: 4px;
+	font-size: 30px;
+	transition-property: filter;
+	transition: 0.1s;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+}
+.widget_title::-webkit-scrollbar{
+	display: none;
+}
+.widget_title:hover {
+	filter: brightness(1.1);
+}
+
+.widget_title_edit {
+	outline: none;
+	border-top-style: none;
+	border-left-style: none;
+	border-right-style: none;
+	border-bottom-style: dashed;
+	border-bottom-width: 4px;
+	border-color: rgb(146, 255, 146);
+	color: white;
+}
+
+.widget_subtitle {
+	color: #999999;
+	font-size: 18px;
+	font-style: italic;
+	margin: 5px;
+	cursor: default;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+}
+
+.widget_config {
+	width: calc(100% - var(--widget_entry_horizontal_space));
+	margin: calc(var(--widget_entry_horizontal_space)/2);
+}
+
+.widget_config_item {
+	display: inline-block;
+	cursor: pointer;
+	padding-left: 5px; padding-right: 5px;
+	padding-top: 2px; padding-bottom: 2px;
+	border-color: rgb(70, 70, 70);
+	border-style: solid;
+	border-width: 1px;
+	background-color: rgba(0, 0, 0, 0);
+	font-size: medium;
+}
+.widget_config_item:hover {
+	background-color: rgb(50, 50, 50);
+	border-color: var(--white);
+}
+.widget_config_item:active {
+	background-color: rgb(90,90,90);
+	border-color: var(--white);
+}
+
+.widget_obj {
+	/* widget frame, child of widget-module */
+	/* background-color: rgb(35, 35, 35); */
+	/* border-color: white; */
+	/* border-radius: var(--widget_obj_corner); */
+	border-top-left-radius: var(--widget_obj_corner);
+	border-top-right-radius: var(--widget_obj_corner);
+	/* border-style: solid; */
+	border-top-style: solid;
+	border-left-style: solid;
+	border-right-style: solid;
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.widget_body {
+	column-count: 1;
+	width: 100%;
+	left: 0;
+	top: 50px;
+	/* position: absolute; */
+	/* padding: 5px; */
+	height: 100%;
+	border-left-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-bottom-left-radius: var(--widget_obj_corner);
+	border-bottom-right-radius: var(--widget_obj_corner);
+	background-color: var(--widget_body_background);
+	font-size: 20px;
+}
+
+.widget_preview {
+	height: 100px;
+	overflow: scroll;
+	width: calc(100% - var(--widget_preview_margin*2));
+	margin-left: var(--widget_preview_margin);
+	margin-right: var(--widget_preview_margin);
+	background-color: #151515;
+	border-style: solid;
+	border-color: var(--grey1);
+}
+
+.widget_resize {
+	/* this only covers horizontal resize (wider/narrower)
+	because vertical height is determined by
+	number of inputs/outputs, size of preview window etc.,
+	not user defined. */
+
+	position: absolute;
+	height: calc(100% - 2 * var(--widget_obj_corner));
+	width: 5px;
+	top: var(--widget_obj_corner);
+	border-style: none;
+}
+
+.widget_resize:hover{
+	cursor: ew-resize;
+}
+
+.wconn {
+	height: 20px;
+	width: 20px;
+	position: absolute;
+	border-radius: 20px;
+	border-style: solid;
+	border-color: #cccccc;
+	border-width: 2px;
+	background-color: #ff1292;
+	overflow: visible;
+	color: #d147cc;
+}
+.wconn:hover {
+	border-width: 5px;
+	margin: -2px;
+}
+.wconn.wconn_in{
+	left: -10px;
+}
+.wconn.wconn_out{
+	right: -15px;
+}
+
+
+#panels_layer {
+	/* layer to place panel elements */
+	z-index: 1000;
+	position: absolute;
+	left: 0; right: 0; top: 0; bottom: 0;
+	overflow: hidden;
+
+	/* this is so that events (e.g. dragging) are not blocked from entering
+	the drawing board, since panels_layer is full-screen
+	events targeting panels will be received by individual panel elements*/
+	pointer-events: none;
+}
+
+#tool_tips {
+	/* layer to display tool tips, which could be anywhere on screen */
+	z-index: 9100;
+	position: absolute;
+	left: 0; right: 0; top: 0; bottom: 0;
+	overflow: hidden;
+	/* setting below: see .panels_layer -> pointer-events */
+	pointer-events: none;
+}
+
+.tooltip_element {
+	position: absolute;
+	border-style: solid;
+	border-width: 2px;
+	border-color: #777777;
+	border-radius: 3px;
+	background-color: #444444ab;
+	padding: 4px;
+}
+
+#overlay_menus {
+	z-index: 9050;
+	position: absolute;
+	left: 0; right: 0; top: 0; bottom: 0;
+	overflow: hidden;
+	pointer-events: none;
+	/* overlay menus layer is supposed to lock out dboard events when active,
+	but should hand over control if dismissed (by clicking area without element) */
+}
+
+.context_menu {
+	position: absolute;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 5px;
+	background-color: rgb(45, 45, 45);
+	border-color: rgb(65, 65, 65);
+	column-count: 1;
+	display: inline-grid;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	cursor: default;
+	overflow: hidden;
+	box-shadow: 0 0 20px #00000088;
+}
+.context_menu_scrollpane {
+	height: 100%;
+	overflow-y: scroll;
+	pointer-events: all;
+}
+
+.context_menu_scrollpane::-webkit-scrollbar {
+	display: none;
+}
+
+.context_menu_item_selectable {
+	margin-left: 5px; margin-right: 5px;
+	border-radius: 5px;
+	padding: 2px;
+}
+.context_menu_item_selectable:hover {
+	background-color: #6f87d4df;
+}
+.context_menu_item_nonselectable {
+	margin-left: 5px; margin-right: 5px;
+	border-radius: 5px;
+	padding: 2px;
+	color: rgb(160, 160, 160);
+}
+
+.panel {
+	/* panel class */
+	position: absolute;
+	height: 99vh;
+	width: 200px;
+	border-style: solid;
+	border-color: #cccccc;
+	background-color: #222222;
+	overflow: visible;
+	top: 0px;
+	bottom: 1px;
+	left: 0px;
+	min-width: 40px;
+	max-width: 45vw;
+	max-height: 99vh;
+	min-height: 40px;
+	pointer-events: all;
+}
+.panel_content {
+	position: relative;
+	left: 0; right: 0; width: 100%; height: 100%;
+	overflow: auto;
+}
+
+.resizer {
+	position: absolute;
+	transition: 100ms;
+	border-width: 0;
+	/* visibility: hidden; */
+}
+.resizer:hover {
+	border-style: solid;
+	/* border-color: lightblue; */
+	background-color: lightblue;
+}
+
+#openfile {
+	background-color: white;
+}
+#openfile:hover {
+	background-color: green;
+}
+
+.text_input {
+	border-style: solid;
+	border-width: 1px;
+	width: 90%;
+	outline: 0;
+}
+
+.search {
+	border-style: solid;
+	border-width: 1px;
+	width: calc(100% - 15px);
+	margin: 5px;
+	outline: 0;
+}
+
+.search_list {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #77777777;
+	top: 0;
+	width: 100%;
+	height: 150px;
+	overflow-y: scroll;
+	/* display: inline; */
+}
+.search_list::-webkit-scrollbar {
+    display: none;
+}
+
+.search_match_item {
+	font-size: 13px;
+	display: grid;
+	grid-template-columns: auto 50px;
+}
+
+.search_add_button {
+	border-style: none;
+	border-width: 0;
+	border-radius: 0;
+	height: 100%;
+}
+.search_add_button:hover{
+	background-color: #77777777;
+}
+.search_add_button:active{
+	background-color: #77777799;
+}
+
+
+.horizontally_margined {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+
+/* widget controls (sliders, checkboxes, text labels etc.) */
+.widget_item_entry {
+	height: var(--widget_entry_height);
+	margin-left: var(--widget_entry_horizontal_space);
+	margin-right: var(--widget_entry_horizontal_space);
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+
+.wentry {
+	display: flex;
+	cursor: default;
+}
+
+.wentry_covered_text {
+	position: absolute;
+	display: block;
+	margin-left: var(--txt-container-horizontal-space);
+	margin-right: var(--txt-container-horizontal-space);
+	width: calc(100%
+		- 2 * var(--widget_entry_horizontal_space)
+		- 2 * var(--txt-container-horizontal-space)
+	);
+	white-space: nowrap;
+	overflow: hidden;
+	
+	background: linear-gradient(to right, rgba(220, 220, 220, 1) 80%, rgba(220, 220, 220, 0) 95%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+.wslider {
+	height: 100%;
+	width: 100%;
+	border-style: solid;
+	border-radius: 5px;
+	border-width: 1px;
+	border-color: rgb(190, 190, 190);
+	overflow: hidden;
+	display: inline-flex;
+	position: relative;
+	background-color: rgb(50, 50, 50);
+}
+.wslider:active {
+	background-color: rgb(20, 20, 20);
+}
+.wslider_edit {
+	padding-left: var(--txt-container-horizontal-space);
+	position:absolute;
+	background-color: rgba(0,0,0,1);
+	transform-origin: left top;
+	font-size: 18px;
+	font-family: sans;
+	/* border-style: none; */
+}
+.wslider_slider {
+	background-color: rgb(49, 116, 192);
+}
+
+.wslider_text {
+	pointer-events: none;
+	left: 0;
+	margin-left: var(--txt-container-horizontal-space);
+	position: absolute;
+}
+.wslider_value {
+	pointer-events: none;
+	right: 0;
+	margin-right: var(--txt-container-horizontal-space);
+	position: absolute;
+	justify-content: right;
+}
+
+
+.wtextentry {
+	resize: vertical;
+	overflow-y: scroll;
+	width: 100%;
+	height: calc(var(--widget_entry_height) * 2);
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 5px;
+	border-color: rgb(190, 190, 190);
+	justify-content: right;
+	display: grid;
+	cursor: default;
+	background-color: rgb(50, 50, 50);
+	color: var(--white);
+}
+
+/* option-menu using default drop-down menu */
+.woptions {
+	overflow-y: scroll;
+}
+
+
+/* option-menu using custom elements. note extra 'c' in name 'wcoptions' */
+.wcoptions_display {
+	width: 100%;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 5px;
+	border-color: rgb(190, 190, 190);
+	overflow: hidden;
+	justify-content: right;
+	display: grid;
+	height: 1.15em;
+	cursor: default;
+}
+.wcoptions_display::-webkit-scrollbar {
+    display: none;
+}
+.wcoptions_display:active {
+	background-color: rgb(10, 10, 10);
+}
+.wcoptions_text {
+	position: absolute;
+	margin-left: var(--txt-container-horizontal-space);
+	margin-right: var(--txt-container-horizontal-space);
+	width: calc(100%
+		- 2 * var(--widget_entry_horizontal_space)
+		- 2 * var(--txt-container-horizontal-space)
+	);
+	white-space: nowrap;
+	overflow: hidden;
+	
+	background: linear-gradient(to right, rgba(220, 220, 220, 1) 80%, rgba(220, 220, 220, 0) 95%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+.wcoptions_menu {
+	overflow-y: auto;
+	position: absolute;
+	background-color: rgb(45, 45, 45);
+	border-color: rgb(65, 65, 65);
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 5px;
+}
+/* ---------- */
+
+
+/* menu stuff */
+.drag_handle {
+	fill: white;
+}
+
+
+#debug {
+	z-index: 10001;
+	position: absolute;
+	left: 0; right: 0; bottom: 0; top: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+#debug_button1 {
+	position: absolute;
+	top: 0;
+	right: 0;
+	pointer-events: all;
+}

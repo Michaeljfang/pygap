@@ -1,0 +1,33 @@
+{
+	"?": "the keys must match the name of the python class, if applicable",
+	"Generic_base": {
+		"title_bar_color": "#666666e0",
+		"padding": 10,
+		"fontSize": 30,
+		"boarderRadius": 10
+	},
+	"Canonicizer": {
+		"title_bar_color": "#228899e0"
+	},
+	"EventDriver": {
+		"title_bar_color": "#5599ffe0"
+	},
+	"EventCulling": {
+		"title_bar_color": "#769300e0"
+	},
+	"AnalysisMethod": {
+		"title_bar_color": "#725cb1e0"
+	},
+	"DistanceFunction": {
+		"title_bar_color": "#d147cce0"
+	},
+	"Embedding": {
+		"title_bar_color": "#cc8ac2e0"
+	},
+	"Utilities": {
+		"title_bar_color": "#666666e0"
+	},
+	"Math": {
+		"title_bar_color": "#555555e0"
+	}
+}

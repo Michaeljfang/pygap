@@ -1,0 +1,25 @@
+{
+	"PyAPI": {
+		"address": "tcp://127.0.0.1:4227",
+		"socket": null,
+		"process": null,
+		"note": "spawn commands need to call the bundled Python instead of system Python",
+		"spawn": ["python3", ["messenger.py"]]
+	},
+	"JavaAPI": {
+		"address": "tcp://127.0.0.1:4228",
+		"socket": null,
+		"process": null,
+		"spawn": ["java", ["placeholder"]],
+		"sys_exit_error_codes": {
+			"1": "Messenger.createSocket() failed: failed to create a socket to connect to front end.",
+			"2": "Messenger.receive() error (returned null). Unblocking failed. Comms issue.",
+			"3": "Other errors during the send/receive process. See Java error message."
+		}
+	},
+	"C_API": {
+		"address": "tcp://127.0.0.1:4229",
+		"socket": null,
+		"process": null
+	}
+}

@@ -1,0 +1,20 @@
+# reserved functions & params for PyAPI. will have default value/function if omitted
+__init__()
+after_init()
+in_out()
+process()
+process_single()
+displayName()
+displayDescription()
+set_attr()
+validate_parameter()
+
+_variable_options
+_live
+_preview
+_global_parameters
+_NoDistanceFunction_
+_default_multiprocessing
+_cache
+
+_is_output # affects scheduler

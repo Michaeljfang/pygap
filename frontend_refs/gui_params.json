@@ -1,0 +1,8 @@
+{
+	"widget": {
+		"width_min": 175
+	},
+	"exp": {
+		"progress_report_port": 4226
+	}
+}
